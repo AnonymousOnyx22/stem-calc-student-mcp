@@ -1,16 +1,16 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.AnonymousOnyx22/stem-calc-student-mcp",
-  "description": "stem calculator mcp server",
+  "description": "STEM Calc MCP for chemistry and physics homework: molar mass, balancing, units. Works offline.",
   "repository": {
-    "url": "https://github.com/AnonymousOnyx22/gpa-calculator-mcp",
+    "url": "https://github.com/AnonymousOnyx22/stem-calc-student-mcp",
     "source": "github"
   },
   "version": "0.1.0",
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "gpa-calculator-mcp",
+      "identifier": "stem-calc-student-mcp",
       "version": "0.1.0",
       "transport": {
         "type": "stdio"
@@ -19,4 +19,3 @@
   ],
   "websiteUrl": "https://brightspacemcp.com/more-mcps/"
 }
-

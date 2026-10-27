@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs } from "./stem.js";
 
 type Api = null;
 
@@ -8,12 +8,12 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "molar_mass",
     title: "Molar mass",
-    description: "Parse a chemical formula and return molar mass with element breakdown.",
-    inputSchema: { formula: z.string().describe("Chemical formula like H2O or Ca(OH)2") },
+    description: "Parse a chemical formula and return the molar mass in g/mol with the mass each element adds. Handles brackets and hydrates like CuSO4.5H2O.",
+    inputSchema: { formula: z.string().describe("Chemical formula like H2O, Ca(OH)2 or CuSO4.5H2O. Write each element with a capital first letter.") },
     outputSchema: { mass: z.number(), breakdown: z.array(z.object({ element: z.string(), count: z.number(), mass: z.number() })) },
     run: async (a) => {
       const r = molarMass(a.formula);
-      const lines = r.breakdown.map(b => `${b.element}: ${b.count} x ${b.mass/b.count} = ${b.mass}`);
+      const lines = r.breakdown.map((b) => `${b.element}: ${b.count} x ${ATOMS[b.element]} = ${b.mass}`);
       return { text: `${a.formula}: ${r.mass} g/mol\n${bullets(lines)}`, structured: { mass: r.mass, breakdown: r.breakdown } };
     },
   },
@@ -31,20 +31,21 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "stoichiometry",
     title: "Stoichiometry",
-    description: "Convert between grams, moles and particles, find limiting reagent.",
+    description: "Convert between grams, moles and particles. Converting to or from grams needs the chemical formula.",
     inputSchema: {
-      value: z.number(),
-      from: z.enum(["grams","moles","particles"]),
-      to: z.enum(["grams","moles","particles"]),
-      formula: z.string().optional(),
+      value: z.number().describe("The amount to convert."),
+      from: z.enum(["grams", "moles", "particles"]).describe("What the value is in."),
+      to: z.enum(["grams", "moles", "particles"]).describe("What to convert it to."),
+      formula: z.string().optional().describe("The chemical formula, like H2O. Needed when grams are involved."),
     },
     outputSchema: { result: z.number() },
     run: async (a) => {
+      if ((a.from === "grams" || a.to === "grams") && !a.formula) throw new Error("Pass the chemical formula, like H2O, to convert to or from grams.");
       let moles = a.value;
-      if (a.from === "grams") moles = gramsToMoles(a.value, a.formula);
+      if (a.from === "grams") moles = gramsToMoles(a.value, a.formula!);
       if (a.from === "particles") moles = a.value / 6.02214076e23;
       let result = moles;
-      if (a.to === "grams") result = molesToGrams(moles, a.formula);
+      if (a.to === "grams") result = molesToGrams(moles, a.formula!);
       if (a.to === "particles") result = molesToParticles(moles);
       return { text: `${a.value} ${a.from} = ${result} ${a.to}`, structured: { result } };
     },
@@ -52,8 +53,12 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "convert_units",
     title: "Convert units",
-    description: "Convert units with dimensional analysis.",
-    inputSchema: { value: z.number(), from: z.string(), to: z.string() },
+    description: "Convert a value between units of length, mass, time, volume, energy or temperature. It refuses to convert one kind of unit into another.",
+    inputSchema: {
+      value: z.number().describe("The number to convert."),
+      from: z.string().describe("The unit it is in, like km, kg, mL, J or C."),
+      to: z.string().describe("The unit to convert it to."),
+    },
     outputSchema: { result: z.number() },
     run: async (a) => {
       const r = convertUnits(a.value, a.from, a.to);
@@ -63,8 +68,11 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "round_sig_figs",
     title: "Round sig figs",
-    description: "Apply significant figure rules to a calculation result.",
-    inputSchema: { value: z.number(), sigFigs: z.number().int().positive() },
+    description: "Round a number to a given number of significant figures.",
+    inputSchema: {
+      value: z.number().describe("The number to round."),
+      sigFigs: z.number().int().positive().describe("How many significant figures to keep."),
+    },
     outputSchema: { result: z.number() },
     run: async (a) => {
       const r = roundSigFigs(a.value, a.sigFigs);
