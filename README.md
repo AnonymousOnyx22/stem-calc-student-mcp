@@ -68,13 +68,13 @@ VS Code uses a `servers` key, not `mcpServers`. Add this to `.vscode/mcp.json`:
 
 All five tools are read only. They calculate an answer and never change anything on your computer.
 
-| Tool | What it does | Inputs |
-| --- | --- | --- |
-| `molar_mass` | Molar mass of a formula in g/mol, with the mass each element adds | `formula`, like `H2O`, `Ca(OH)2` or `CuSO4.5H2O` |
-| `balance_equation` | Balances a chemical equation | `equation`, like `H2 + O2 -> H2O` |
-| `stoichiometry` | Converts between grams, moles and particles | `value`, `from`, `to` (`grams`, `moles` or `particles`) and `formula`, which grams need |
-| `convert_units` | Converts a value from one unit to another | `value`, `from`, `to` |
-| `round_sig_figs` | Rounds a number to a number of significant figures | `value`, `sigFigs` |
+| Tool | What it does | Inputs | Example prompt |
+| --- | --- | --- | --- |
+| `molar_mass` | Molar mass of a formula in g/mol, with the mass each element adds | `formula`, like `H2O`, `Ca(OH)2` or `CuSO4.5H2O` | "What is the molar mass of Ca(OH)2?" |
+| `balance_equation` | Balances a chemical equation | `equation`, like `H2 + O2 -> H2O` | "Balance C3H8 + O2 -> CO2 + H2O." |
+| `stoichiometry` | Converts between grams, moles and particles | `value`, `from`, `to` (`grams`, `moles` or `particles`) and `formula`, which grams need | "How many moles are in 36 grams of water?" |
+| `convert_units` | Converts a value from one unit to another | `value`, `from`, `to` | "Convert 2.5 km to feet." |
+| `round_sig_figs` | Rounds a number to a number of significant figures | `value`, `sigFigs` | "Round 123456 to 3 significant figures." |
 
 Every tool also returns its answer as fields next to the text, so an app that reads JSON gets the numbers without picking them out of a sentence.
 
