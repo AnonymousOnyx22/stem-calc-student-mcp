@@ -1,0 +1,21 @@
+{
+  "name": "stem-calc-student-mcp",
+  "version": "0.1.0",
+  "description": "stem calculator mcp server. Works offline, no account. Molar mass, equation balancing, stoichiometry, unit conversion with dimensional analysis and significant figures for chemistry and physics.",
+  "type": "module",
+  "main": "build/src/index.js",
+  "bin": { "stem-calc-student-mcp": "build/src/index.js" },
+  "files": ["build/src", "README.md", "llms.txt", "CHANGELOG.md", "LICENSE"],
+  "engines": { "node": ">=20" },
+  "devEngines": { "runtime": { "name": "node", "version": "^22.12.0 || ^24.0.0 || >=26.0.0" } },
+  "scripts": { "build": "tsc && node -e \"require('fs').chmodSync('build/src/index.js', 0o755)\"", "test": "vitest run", "start": "node build/src/index.js", "prepublishOnly": "npm run build && npm test" },
+  "keywords": ["stem calculator mcp", "stem calculator", "chemistry calculator", "physics calculator", "molar mass", "equation balancing", "stoichiometry", "unit conversion", "dimensional analysis", "significant figures", "mcp", "mcp server", "model context protocol", "offline", "student", "education"],
+  "author": "AnonymousOnyx22",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/AnonymousOnyx22/stem-calc-student-mcp.git" },
+  "homepage": "https://github.com/AnonymousOnyx22/stem-calc-student-mcp#readme",
+  "bugs": { "url": "https://github.com/AnonymousOnyx22/stem-calc-student-mcp/issues" },
+  "mcpName": "io.github.AnonymousOnyx22/stem-calc-student-mcp",
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.32.1", "zod": "^4.6.7" },
+  "devDependencies": { "@types/node": "^26.6.5", "typescript": "^7.0.2", "vitest": "^5.0.5" }
+}
