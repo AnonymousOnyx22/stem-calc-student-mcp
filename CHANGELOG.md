@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The npm description and keywords now use the phrase STEM calculator MCP, so the package is easier to find when you search for it.
+
 ## 0.1.1
 
 - The stoichiometry tool description now says clearly that a chemical formula is needed whenever grams are involved.
