@@ -30,7 +30,8 @@ describe("package and registry metadata", () => {
     expect(keywords.length).toBeGreaterThanOrEqual(10);
   });
   it("leaves no template text behind", () => {
-    for (const file of ["README.md", "llms.txt", "glama.json", "server.json", "CHANGELOG.md"]) expect(read(file), file).not.toMatch(/gpa|chatgpt/i);
+    // the table of sibling servers names the other servers on purpose, so it is left out of this check
+    for (const file of ["README.md", "llms.txt", "glama.json", "server.json", "CHANGELOG.md"]) expect(read(file).replace(/\n## More free student MCP servers[\s\S]*?(?=\n## |$)/, ""), file).not.toMatch(/gpa|chatgpt/i);
   });
 });
 
