@@ -4,24 +4,21 @@
 [![downloads](https://img.shields.io/npm/dm/stem-calc-student-mcp.svg)](https://www.npmjs.com/package/stem-calc-student-mcp)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-STEM Calc MCP is a free, open source [MCP](https://modelcontextprotocol.io) server for chemistry and physics homework, published on npm as `stem-calc-student-mcp`. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units and rounds an answer to the right number of significant figures. The arithmetic is done by tested code, so you get the same answer every time and not a guess from the model.
+When an AI guesses chemistry and physics homework, the numbers are often wrong. STEM Calc MCP fixes that: it is a free, open source [MCP](https://modelcontextprotocol.io) server that does the arithmetic with tested code, so you get the same answer every time. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units and rounds to the right number of significant figures.
 
-Use it with Claude Desktop, Claude Code, Cursor, VS Code, Windsurf and any other app that runs a local MCP server. It runs on your computer and needs no internet, no account and no API key.
-
-## Try these prompts
-
-1. "What is the molar mass of copper sulfate pentahydrate, CuSO4.5H2O?"
-2. "Balance this equation: C3H8 + O2 -> CO2 + H2O"
-3. "How many moles are in 36 grams of water?"
-4. "Convert 2.5 kilometres to feet, then round it to 3 significant figures."
-
-## Install
-
-You need Node.js 20 or newer. There is nothing else to install.
+Install with one line:
 
 ```bash
 npx -y stem-calc-student-mcp
 ```
+
+Try these prompts:
+
+1. "What is the molar mass of copper sulfate pentahydrate, CuSO4.5H2O?"
+2. "Balance this equation: C3H8 + O2 -> CO2 + H2O"
+3. "How many moles are in 36 grams of water?"
+
+Use it with Claude Desktop, Claude Code, Cursor, VS Code, Windsurf and any other app that runs a local MCP server. It runs on your computer and needs no internet, no account and no API key.
 
 ### Claude Desktop
 
