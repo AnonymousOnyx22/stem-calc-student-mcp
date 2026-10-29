@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Add example prompts to README Tools table
+- Update package.json
+- Add How it compares section to README contrasting with LMS MCPs
+- Clarify formula requirement for grams in stoichiometry descriptions
+
 ## 0.1.0
 
 - First release. STEM Calc MCP does the arithmetic of chemistry and physics homework: molar mass, balancing chemical equations, converting between grams, moles and particles, converting units and rounding to significant figures.
