@@ -84,6 +84,12 @@ Every tool also returns its answer as fields next to the text, so an app that re
 - **Units.** Length: `m`, `km`, `cm`, `mm`, `in`, `ft`. Mass: `g`, `kg`, `mg`, `lb`. Time: `s`, `min`, `h`. Volume: `L`, `mL`, `m^3`. Energy: `J`, `kJ`, `cal`, `kcal`. Temperature: `K`, `C`, `F`. It refuses to convert one kind into another, so metres to seconds is an error.
 - **What it does not do.** It does not find a limiting reagent, work with charges or isotopes, or balance reactions that have no solution. When it cannot answer, it says so.
 
+## How it compares
+
+Some MCP servers connect an assistant to a learning management system, so it can read your courses, grades and due dates. Those need an account, a login and a network connection. This one does none of that. It only does homework math, and it runs on your own computer with no sign in, no network calls and no files read or written. The same input gives the same answer every time.
+
+Use an LMS server to find out what is due. Use this one to check the chemistry and unit conversions once you sit down to do it. They work fine side by side.
+
 ## Node version
 
 There are two floors here, and they are not the same number.
