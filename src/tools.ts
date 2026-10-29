@@ -31,12 +31,12 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "stoichiometry",
     title: "Stoichiometry",
-    description: "Convert between grams, moles and particles. Converting to or from grams needs the chemical formula.",
+    description: "Convert between grams, moles and particles. The formula is required whenever grams are the from or to unit. Converting between moles and particles needs no formula.",
     inputSchema: {
       value: z.number().describe("The amount to convert."),
       from: z.enum(["grams", "moles", "particles"]).describe("What the value is in."),
       to: z.enum(["grams", "moles", "particles"]).describe("What to convert it to."),
-      formula: z.string().optional().describe("The chemical formula, like H2O. Needed when grams are involved."),
+      formula: z.string().optional().describe("The chemical formula, like H2O. Required when from or to is grams. Not used otherwise."),
     },
     outputSchema: { result: z.number() },
     run: async (a) => {

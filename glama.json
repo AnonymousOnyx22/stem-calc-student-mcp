@@ -52,7 +52,7 @@
     },
     {
       "name": "stoichiometry",
-      "description": "Convert between grams, moles and particles. Converting to or from grams needs the chemical formula.",
+      "description": "Convert between grams, moles and particles. The formula is required whenever grams are the from or to unit. Converting between moles and particles needs no formula.",
       "parameters": [
         {
           "name": "value",
@@ -86,7 +86,7 @@
           "name": "formula",
           "type": "string",
           "required": false,
-          "description": "The chemical formula, like H2O. Needed when grams are involved."
+          "description": "The chemical formula, like H2O. Required when from or to is grams. Not used otherwise."
         }
       ],
       "example": {

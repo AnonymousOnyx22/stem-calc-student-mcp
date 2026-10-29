@@ -10,7 +10,7 @@
 ## Tools
 - molar_mass: Parse a chemical formula and return the molar mass in g/mol with the mass each element adds. Handles brackets and hydrates like CuSO4.5H2O. Example prompt: "What is the molar mass of Ca(OH)2?"
 - balance_equation: Balance a chemical equation written with -> and +. Example prompt: "Balance C3H8 + O2 -> CO2 + H2O."
-- stoichiometry: Convert between grams, moles and particles. Converting to or from grams needs the chemical formula. Example prompt: "How many moles are in 36 grams of water?"
+- stoichiometry: Convert between grams, moles and particles. The formula is required whenever grams are the from or to unit. Converting between moles and particles needs no formula. Example prompt: "How many moles are in 36 grams of water?"
 - convert_units: Convert a value between units of length, mass, time, volume, energy or temperature. It refuses to convert one kind of unit into another. Example prompt: "Convert 2.5 km to feet."
 - round_sig_figs: Round a number to a given number of significant figures. Example prompt: "Round 123456 to 3 significant figures."
 
