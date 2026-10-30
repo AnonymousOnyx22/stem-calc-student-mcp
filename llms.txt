@@ -14,6 +14,13 @@
 - convert_units: Convert a value between units of length, mass, time, volume, energy or temperature. It refuses to convert one kind of unit into another. Example prompt: "Convert 2.5 km to feet."
 - round_sig_figs: Round a number to a given number of significant figures. Example prompt: "Round 123456 to 3 significant figures."
 
+## Unit conversion examples
+- Length: convert_units with value 2.5, from "km", to "ft" returns about 8202.1.
+- Temperature: convert_units with value 100, from "C", to "F" returns 212.
+- Mixed kinds are an error. Converting "kg" to "m" fails with a message saying kg measures mass and m measures length.
+- A unit the server does not know, like "furlong", is also an error. Use the unit symbols listed under Limits.
+- Unit symbols are case sensitive. Write mL, kJ, K, C and F exactly as listed.
+
 ## Limits
 - It knows 56 common elements. An unknown element symbol is an error.
 - It does not find limiting reagents and does not handle charges or isotopes.
