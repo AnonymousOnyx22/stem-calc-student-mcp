@@ -78,6 +78,9 @@ Every tool also returns its answer as fields next to the text, so an app that re
 ## What it knows
 
 - **Formulas.** Write each element with a capital first letter. Round brackets and square brackets work, so `Fe2(SO4)3` and `K3[Fe(CN)6]` are fine, and so are hydrates written with a dot, like `CuSO4.5H2O`. It knows 56 common elements, from hydrogen to uranium. A symbol it does not know gets a clear error, never a guess.
+  - `Fe2(SO4)3` has 2 iron, 3 sulfur and 12 oxygen atoms, and a molar mass of 399.858 g/mol.
+  - `K3[Fe(CN)6]` has 3 potassium, 1 iron, 6 carbon and 6 nitrogen atoms, and a molar mass of 329.247 g/mol.
+  - `CuSO4.5H2O` counts the five waters, so it has 1 copper, 1 sulfur, 9 oxygen and 10 hydrogen atoms, and a molar mass of 249.677 g/mol.
 - **Units.** Length: `m`, `km`, `cm`, `mm`, `in`, `ft`. Mass: `g`, `kg`, `mg`, `lb`. Time: `s`, `min`, `h`. Volume: `L`, `mL`, `m^3`. Energy: `J`, `kJ`, `cal`, `kcal`. Temperature: `K`, `C`, `F`. It refuses to convert one kind into another, so metres to seconds is an error.
 - **What it does not do.** It does not find a limiting reagent, work with charges or isotopes, or balance reactions that have no solution. When it cannot answer, it says so.
 
