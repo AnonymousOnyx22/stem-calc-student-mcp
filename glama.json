@@ -1,7 +1,7 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
   "name": "stem-calc-student-mcp",
-  "description": "STEM calculator MCP for chemistry and physics homework: molar mass, balancing equations, grams to moles, unit conversion and significant figures. Works offline, no account.",
+  "description": "STEM calculator MCP for chemistry and physics homework: molar mass, balancing equations, grams to moles, unit conversion and significant figures. Works offline, no account or API key.",
   "type": "stdio",
   "license": "MIT",
   "repository": {
