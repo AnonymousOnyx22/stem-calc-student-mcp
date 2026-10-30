@@ -1,6 +1,6 @@
 {
   "name": "stem-calc-student-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "STEM calculator MCP for chemistry and physics homework: molar mass, balancing equations, grams to moles, unit conversion and significant figures. Works offline, no account.",
   "type": "module",
   "main": "build/src/index.js",

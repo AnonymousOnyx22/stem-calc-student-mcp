@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.2
 
 - The npm description and keywords now use the phrase STEM calculator MCP, so the package is easier to find when you search for it.
 
