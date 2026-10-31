@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Every tool now reports openWorldHint: false, so clients can see that the server works offline.
 - convert_units now accepts common spellings such as ml, degC and °C, and converts flow rates (L/min, mL/min, L/s, m^3/s).
 - convert_units now handles pressure (Pa, kPa, atm, mmHg, bar, psi) and speed (m/s, km/h).
 - balance_equation now handles any number of reactants and products, so reactions like KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2 balance correctly.
