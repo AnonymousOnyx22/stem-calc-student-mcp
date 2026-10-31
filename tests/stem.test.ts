@@ -80,6 +80,14 @@ describe("convert_units", () => {
     expect(() => convertUnits(1, "kg", "L")).toThrow(/mass.*volume/);
     expect(() => convertUnits(1, "C", "kg")).toThrow(/temperature.*mass/);
   });
+  it("accepts common spellings and flow rates", () => {
+    expect(convertUnits(500, "ml", "l")).toBe(0.5);
+    expect(convertUnits(100, "°C", "degF")).toBe(212);
+    expect(convertUnits(0, "degC", "kelvin")).toBe(273.15);
+    expect(convertUnits(60, "L/min", "L/s")).toBeCloseTo(1, 9);
+    expect(convertUnits(1000, "mL/min", "lpm")).toBeCloseTo(1, 9);
+    expect(() => convertUnits(1, "L/min", "kg")).toThrow(/flow.*mass/);
+  });
   it("names a unit it does not know", () => {
     expect(() => convertUnits(1, "parsec", "m")).toThrow(/Unknown unit/);
   });

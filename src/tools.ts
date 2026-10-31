@@ -53,10 +53,10 @@ export const tools: ToolDef<Api>[] = [
   {
     name: "convert_units",
     title: "Convert units",
-    description: "Convert a value between units of length, mass, time, volume, energy, temperature, pressure or speed. It refuses to convert one kind of unit into another.",
+    description: "Convert a value between units of length, mass, time, volume, energy, temperature, pressure, speed or flow rate. Common spellings like ml, degC, °C and L/min are accepted. It refuses to convert one kind of unit into another.",
     inputSchema: {
       value: z.number().describe("The number to convert."),
-      from: z.string().describe("The unit it is in, like km, kg, mL, J, C, atm or km/h."),
+      from: z.string().describe("The unit it is in, like km, kg, mL, J, C, atm, km/h or L/min."),
       to: z.string().describe("The unit to convert it to."),
     },
     outputSchema: { result: z.number() },

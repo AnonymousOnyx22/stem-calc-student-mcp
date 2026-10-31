@@ -70,6 +70,7 @@ const FACTORS: Record<string, number> = {
   K:1, C:1, F:1,
   Pa:1, kPa:1000, atm:101325, mmHg:101325/760, bar:100000, psi:6894.757293168,
   "m/s":1, "km/h":1/3.6,
+  "m^3/s":1, "L/s":0.001, "L/min":0.001/60, "mL/min":1e-6/60,
 };
 /** What each unit measures, so a length is never converted to a time. */
 const KINDS: Record<string, string[]> = {
@@ -81,9 +82,32 @@ const KINDS: Record<string, string[]> = {
   temperature: ["K", "C", "F"],
   pressure: ["Pa", "kPa", "atm", "mmHg", "bar", "psi"],
   speed: ["m/s", "km/h"],
+  flow: ["m^3/s", "L/s", "L/min", "mL/min"],
 };
 const kindOf = (unit: string) => Object.keys(KINDS).find((k) => KINDS[k].includes(unit));
-export function convertUnits(value: number, from: string, to: string): number {
+/** Common spellings people type, mapped to the unit names above. Keys are lower case. */
+const ALIASES: Record<string, string> = {
+  "°c": "C", degc: "C", celsius: "C", "°f": "F", degf: "F", fahrenheit: "F", kelvin: "K",
+  litre: "L", liter: "L", litres: "L", liters: "L", millilitre: "mL", milliliter: "mL", cc: "mL", cm3: "mL", "cm^3": "mL",
+  m3: "m^3", "m³": "m^3", lpm: "L/min", "l/m": "L/min", "l per min": "L/min", "ml per min": "mL/min",
+  "l/sec": "L/s", "m3/s": "m^3/s", "m³/s": "m^3/s",
+  kmh: "km/h", kph: "km/h", "m/sec": "m/s", mps: "m/s",
+  sec: "s", second: "s", seconds: "s", mins: "min", minute: "min", minutes: "min", hr: "h", hrs: "h", hour: "h", hours: "h",
+  inch: "in", inches: "in", feet: "ft", foot: "ft", lbs: "lb", pound: "lb", pounds: "lb",
+  gram: "g", grams: "g", kilogram: "kg", kilograms: "kg", meter: "m", metre: "m", meters: "m", metres: "m",
+  torr: "mmHg",
+};
+/** The unit name this server uses for what was typed, or the trimmed text if it is not recognised. */
+function canonicalUnit(unit: string): string {
+  const u = String(unit ?? "").trim();
+  if (u in FACTORS) return u;
+  const lower = u.toLowerCase().replace(/\s+/g, " ");
+  if (lower in ALIASES) return ALIASES[lower];
+  const hits = Object.keys(FACTORS).filter((k) => k.toLowerCase() === lower);
+  return hits.length === 1 ? hits[0] : u;
+}
+export function convertUnits(value: number, fromUnit: string, toUnit: string): number {
+  const from = canonicalUnit(fromUnit), to = canonicalUnit(toUnit);
   const a = kindOf(from), b = kindOf(to);
   if (a && b && a !== b) throw new Error(`Cannot convert ${from} to ${to}: ${from} measures ${a} and ${to} measures ${b}.`);
   if (from === "C" && to === "K") return value + 273.15;
@@ -93,7 +117,7 @@ export function convertUnits(value: number, from: string, to: string): number {
   if (from === "F" && to === "K") return (value-32)*5/9+273.15;
   if (from === "K" && to === "F") return (value-273.15)*9/5+32;
   const f = FACTORS[from], t = FACTORS[to];
-  if (f === undefined || t === undefined) throw new Error(`Unknown unit ${from} or ${to}`);
+  if (f === undefined || t === undefined) throw new Error(`Unknown unit ${f === undefined ? fromUnit : toUnit}. Try a unit like km, kg, mL, L/min, J, C, atm or km/h.`);
   return value * f / t;
 }
 
