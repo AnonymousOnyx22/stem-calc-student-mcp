@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.3
 
 - Every tool now reports openWorldHint: false, so clients can see that the server works offline.
 - convert_units now accepts common spellings such as ml, degC and °C, and converts flow rates (L/min, mL/min, L/s, m^3/s).
