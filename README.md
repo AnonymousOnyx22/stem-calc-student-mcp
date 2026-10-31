@@ -113,6 +113,8 @@ npm test
 
 The tests call the same functions the tools use, and they check the README, llms.txt, glama.json and the package files against the tools in `src/tools.ts`.
 
+`npm test` also runs the metadata and docs sync checks in `tests/metadata.test.ts`. If you add or change a tool, update glama.json, llms.txt and this README in the same change, or those checks will fail.
+
 ## More free student MCP servers
 
 All free, open source and read only where they touch your accounts. Browse the full list at [brightspacemcp.com/more-mcps](https://brightspacemcp.com/more-mcps/).
