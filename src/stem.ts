@@ -116,7 +116,7 @@ export function molesToParticles(moles: number): number {
   return moles * 6.02214076e23;
 }
 
-// Simple equation balancer for A + B -> C style with integer coefficients via brute force
+// Equation balancer: exact nullspace solve with integer coefficients for any number of species
 export function balanceEquation(eq: string): string {
   const parts = eq.split("->");
   if (parts.length !== 2) throw new Error("Equation must contain ->");
