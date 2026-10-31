@@ -57,6 +57,14 @@ describe("convert_units", () => {
     expect(convertUnits(100, "C", "F")).toBe(212);
     expect(convertUnits(0, "C", "K")).toBe(273.15);
   });
+  it("converts pressure and speed", () => {
+    expect(convertUnits(1, "atm", "kPa")).toBeCloseTo(101.325, 6);
+    expect(convertUnits(760, "mmHg", "atm")).toBeCloseTo(1, 9);
+    expect(convertUnits(1, "bar", "Pa")).toBe(100000);
+    expect(convertUnits(14.6959, "psi", "atm")).toBeCloseTo(1, 4);
+    expect(convertUnits(36, "km/h", "m/s")).toBeCloseTo(10, 9);
+    expect(() => convertUnits(1, "atm", "m/s")).toThrow(/pressure.*speed/);
+  });
   it("refuses to convert a length into a time, or a mass into a volume", () => {
     expect(() => convertUnits(1, "m", "s")).toThrow(/length.*time/);
     expect(() => convertUnits(1, "kg", "L")).toThrow(/mass.*volume/);

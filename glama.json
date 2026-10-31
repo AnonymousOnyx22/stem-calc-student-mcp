@@ -101,7 +101,7 @@
     },
     {
       "name": "convert_units",
-      "description": "Convert a value between units of length, mass, time, volume, energy or temperature. It refuses to convert one kind of unit into another.",
+      "description": "Convert a value between units of length, mass, time, volume, energy, temperature, pressure or speed. It refuses to convert one kind of unit into another.",
       "parameters": [
         {
           "name": "value",

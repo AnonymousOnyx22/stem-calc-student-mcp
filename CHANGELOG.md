@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- convert_units now handles pressure (Pa, kPa, atm, mmHg, bar, psi) and speed (m/s, km/h).
 - balance_equation now handles any number of reactants and products, so reactions like KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2 balance correctly.
 
 ## 0.1.2

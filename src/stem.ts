@@ -68,6 +68,8 @@ const FACTORS: Record<string, number> = {
   L:0.001, mL:1e-6, "m^3":1,
   J:1, kJ:1000, cal:4.184, kcal:4184,
   K:1, C:1, F:1,
+  Pa:1, kPa:1000, atm:101325, mmHg:101325/760, bar:100000, psi:6894.757293168,
+  "m/s":1, "km/h":1/3.6,
 };
 /** What each unit measures, so a length is never converted to a time. */
 const KINDS: Record<string, string[]> = {
@@ -77,6 +79,8 @@ const KINDS: Record<string, string[]> = {
   volume: ["L", "mL", "m^3"],
   energy: ["J", "kJ", "cal", "kcal"],
   temperature: ["K", "C", "F"],
+  pressure: ["Pa", "kPa", "atm", "mmHg", "bar", "psi"],
+  speed: ["m/s", "km/h"],
 };
 const kindOf = (unit: string) => Object.keys(KINDS).find((k) => KINDS[k].includes(unit));
 export function convertUnits(value: number, from: string, to: string): number {
