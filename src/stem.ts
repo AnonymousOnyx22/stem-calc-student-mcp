@@ -118,13 +118,27 @@ export function molesToParticles(moles: number): number {
 
 // Equation balancer: exact nullspace solve with integer coefficients for any number of species
 export function balanceEquation(eq: string): string {
-  const parts = eq.split("->");
-  if (parts.length !== 2) throw new Error("Equation must contain ->");
-  const left = parts[0].split("+").map(s=>s.trim());
-  const right = parts[1].split("+").map(s=>s.trim());
+  const parts = eq.split(/->|=>|→|⟶|⇒|⟹|=/);
+  if (parts.length < 2) throw new Error(`Equation "${eq}" has no arrow. Write reactants and products separated by -> (or = or →), for example "H2 + O2 -> H2O".`);
+  if (parts.length > 2) throw new Error(`Equation "${eq}" has more than one arrow. Use exactly one -> between reactants and products.`);
+  const sides = parts.map((p, i) => {
+    const species = p.split("+").map((s) => s.trim());
+    if (species.some((s) => s === "")) {
+      throw new Error(`The ${i === 0 ? "reactant" : "product"} side of "${eq}" is empty or has a stray +. Put a formula on each side of every +.`);
+    }
+    return species;
+  });
+  const [left, right] = sides;
   // null space of the element matrix, with exact fractions
   const counts = [...left, ...right].map((f) => parseFormula(f));
   const elems = [...new Set(counts.flatMap((c) => Object.keys(c)))];
+  for (const e of elems) {
+    const onLeft = counts.slice(0, left.length).some((c) => c[e]);
+    const onRight = counts.slice(left.length).some((c) => c[e]);
+    if (onLeft !== onRight) {
+      throw new Error(`Cannot balance: ${e} appears only on the ${onLeft ? "reactant" : "product"} side of "${eq}". Every element must be on both sides.`);
+    }
+  }
   const n = counts.length;
   const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x % y));
   type Fr = [number, number];
@@ -153,7 +167,8 @@ export function balanceEquation(eq: string): string {
     row++;
   }
   const free = [...Array(n).keys()].filter((c) => !pivots.includes(c));
-  if (free.length !== 1) throw new Error("Could not balance");
+  if (free.length === 0) throw new Error(`Could not balance "${eq}": no set of whole number coefficients works. Check the formulas for typos.`);
+  if (free.length > 1) throw new Error(`Could not balance "${eq}": it has more than one valid answer, so the species are not independent. Split it into separate reactions.`);
   const sol: Fr[] = Array.from({ length: n }, () => [0, 1] as Fr);
   sol[free[0]] = [1, 1];
   pivots.forEach((c, i) => {
@@ -164,7 +179,7 @@ export function balanceEquation(eq: string): string {
   let ints = sol.map(([a, b]) => (a * lcm) / b);
   const g = ints.reduce((acc, x) => gcd(acc, x), 0);
   ints = ints.map((x) => x / g);
-  if (ints.some((x) => x <= 0)) throw new Error("Could not balance");
+  if (ints.some((x) => x <= 0)) throw new Error(`Could not balance "${eq}": the only solution needs a negative coefficient, so a species is probably on the wrong side.`);
   const fmt = (arr: string[], off: number) => arr.map((f, i) => (ints[off + i] === 1 ? "" : ints[off + i]) + f).join(" + ");
   return `${fmt(left, 0)} -> ${fmt(right, left.length)}`;
 }

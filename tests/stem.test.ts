@@ -48,6 +48,16 @@ describe("balance_equation", () => {
     expect(() => balanceEquation("H2 -> O2")).toThrow(/balance/);
     expect(() => balanceEquation("hello")).toThrow(/->/);
   });
+  it("accepts = and unicode arrows", () => {
+    expect(balanceEquation("H2 + O2 = H2O")).toBe("2H2 + O2 -> 2H2O");
+    expect(balanceEquation("H2 + O2 → H2O")).toBe("2H2 + O2 -> 2H2O");
+  });
+  it("names the problem in the error", () => {
+    expect(() => balanceEquation("H2 -> O2")).toThrow(/H appears only on the reactant side/);
+    expect(() => balanceEquation("H2 -> H2O -> O2")).toThrow(/more than one arrow/);
+    expect(() => balanceEquation("H2 + -> H2")).toThrow(/stray \+/);
+    expect(() => balanceEquation(" -> H2")).toThrow(/reactant side.*empty/);
+  });
 });
 
 describe("convert_units", () => {
