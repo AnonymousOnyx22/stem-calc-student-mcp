@@ -118,27 +118,49 @@ export function balanceEquation(eq: string): string {
   if (parts.length !== 2) throw new Error("Equation must contain ->");
   const left = parts[0].split("+").map(s=>s.trim());
   const right = parts[1].split("+").map(s=>s.trim());
-  // brute force small coefficients
-  for (let a=1;a<=20;a++) for (let b=1;b<=20;b++) for (let c=1;c<=20;c++) for (let d=1;d<=20;d++) {
-    // support up to 2 reactants and 2 products
-    const lCounts: Record<string,number> = {};
-    const rCounts: Record<string,number> = {};
-    const add = (arr:string[], coeffs:number[], target:Record<string,number>) => {
-      arr.forEach((f,i)=>{ const cnt=parseFormula(f); for(const el in cnt) target[el]=(target[el]||0)+cnt[el]*coeffs[i]; });
-    };
-    const lc = [a,b]; const rc=[c,d];
-    // pad
-    while (lc.length < left.length) lc.push(1);
-    while (rc.length < right.length) rc.push(1);
-    add(left, lc.slice(0,left.length), lCounts);
-    add(right, rc.slice(0,right.length), rCounts);
-    let ok = true;
-    const elems = new Set([...Object.keys(lCounts),...Object.keys(rCounts)]);
-    for (const e of elems) if ((lCounts[e]||0)!==(rCounts[e]||0)) { ok=false; break; }
-    if (ok) {
-      const fmt = (arr:string[], coeffs:number[]) => arr.map((f,i)=> (coeffs[i]===1?"":coeffs[i]) + f).join(" + ");
-      return `${fmt(left,lc.slice(0,left.length))} -> ${fmt(right,rc.slice(0,right.length))}`;
+  // null space of the element matrix, with exact fractions
+  const counts = [...left, ...right].map((f) => parseFormula(f));
+  const elems = [...new Set(counts.flatMap((c) => Object.keys(c)))];
+  const n = counts.length;
+  const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x % y));
+  type Fr = [number, number];
+  const norm = (a: number, b: number): Fr => {
+    const g = gcd(a, b) || 1;
+    return b < 0 ? [-a / g, -b / g] : [a / g, b / g];
+  };
+  const m: Fr[][] = elems.map((e) => counts.map((c, j) => [(c[e] || 0) * (j < left.length ? 1 : -1), 1] as Fr));
+  const pivots: number[] = [];
+  let row = 0;
+  for (let col = 0; col < n && row < m.length; col++) {
+    const p = m.findIndex((r, i) => i >= row && r[col][0] !== 0);
+    if (p < 0) continue;
+    [m[row], m[p]] = [m[p], m[row]];
+    const [pn, pd] = m[row][col];
+    m[row] = m[row].map(([a, b]) => norm(a * pd, b * pn));
+    for (let i = 0; i < m.length; i++) {
+      if (i === row || m[i][col][0] === 0) continue;
+      const [fn, fd] = m[i][col];
+      m[i] = m[i].map(([a, b], j) => {
+        const [ra, rb] = m[row][j];
+        return norm(a * fd * rb - ra * fn * b, b * fd * rb);
+      });
     }
+    pivots.push(col);
+    row++;
   }
-  throw new Error("Could not balance");
+  const free = [...Array(n).keys()].filter((c) => !pivots.includes(c));
+  if (free.length !== 1) throw new Error("Could not balance");
+  const sol: Fr[] = Array.from({ length: n }, () => [0, 1] as Fr);
+  sol[free[0]] = [1, 1];
+  pivots.forEach((c, i) => {
+    const [a, b] = m[i][free[0]];
+    sol[c] = [-a, b];
+  });
+  const lcm = sol.reduce((acc, [, d]) => (acc * d) / gcd(acc, d), 1);
+  let ints = sol.map(([a, b]) => (a * lcm) / b);
+  const g = ints.reduce((acc, x) => gcd(acc, x), 0);
+  ints = ints.map((x) => x / g);
+  if (ints.some((x) => x <= 0)) throw new Error("Could not balance");
+  const fmt = (arr: string[], off: number) => arr.map((f, i) => (ints[off + i] === 1 ? "" : ints[off + i]) + f).join(" + ");
+  return `${fmt(left, 0)} -> ${fmt(right, left.length)}`;
 }

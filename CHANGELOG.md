@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- balance_equation now handles any number of reactants and products, so reactions like KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2 balance correctly.
+
 ## 0.1.2
 
 - The npm description and keywords now use the phrase STEM calculator MCP, so the package is easier to find when you search for it.

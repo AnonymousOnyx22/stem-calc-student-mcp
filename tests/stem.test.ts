@@ -38,6 +38,12 @@ describe("balance_equation", () => {
     expect(balanceEquation("C3H8 + O2 -> CO2 + H2O")).toBe("C3H8 + 5O2 -> 3CO2 + 4H2O");
     expect(balanceEquation("Al + O2 -> Al2O3")).toBe("4Al + 3O2 -> 2Al2O3");
   });
+  it("balances reactions with larger coefficients", () => {
+    expect(balanceEquation("C6H12O6 + O2 -> CO2 + H2O")).toBe("C6H12O6 + 6O2 -> 6CO2 + 6H2O");
+    expect(balanceEquation("KMnO4 + HCl -> KCl + MnCl2 + H2O + Cl2")).toBe(
+      "2KMnO4 + 16HCl -> 2KCl + 2MnCl2 + 8H2O + 5Cl2",
+    );
+  });
   it("says so when it cannot", () => {
     expect(() => balanceEquation("H2 -> O2")).toThrow(/balance/);
     expect(() => balanceEquation("hello")).toThrow(/->/);
