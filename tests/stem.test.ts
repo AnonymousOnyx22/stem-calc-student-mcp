@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution, limitingReagent } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -195,5 +195,29 @@ describe("solution_math", () => {
   it("runs through the tool", async () => {
     const r = await tool("solution_math").run({ mode: "molarity", moles: 1, liters: 2 }, null);
     expect(r.structured).toEqual({ solved: "molarity", result: 0.5 });
+  });
+});
+
+describe("limiting_reagent", () => {
+  it("finds the limiting reagent and yield for ammonia", () => {
+    const r = limitingReagent("N2 + H2 -> NH3", [{ formula: "N2", grams: 28.0134 }, { formula: "H2", grams: 3 }]);
+    expect(r.balanced).toBe("N2 + 3H2 -> 2NH3");
+    expect(r.limiting).toBe("H2");
+    expect(r.theoreticalYieldGrams).toBeCloseTo(16.9, 1);
+    expect(r.leftover[0].formula).toBe("N2");
+    expect(r.leftover[0].leftoverGrams).toBeGreaterThan(0);
+  });
+  it("can report a named product", () => {
+    const r = limitingReagent("H2 + O2 -> H2O", [{ formula: "H2", grams: 4 }, { formula: "O2", grams: 100 }], "H2O");
+    expect(r.limiting).toBe("H2");
+    expect(r.theoreticalYieldGrams).toBeCloseTo(35.74, 1);
+  });
+  it("rejects missing or unknown species", () => {
+    expect(() => limitingReagent("N2 + H2 -> NH3", [{ formula: "N2", grams: 5 }])).toThrow(/grams of H2/);
+    expect(() => limitingReagent("N2 + H2 -> NH3", [{ formula: "N2", grams: 5 }, { formula: "H2", grams: 1 }], "O2")).toThrow(/not a product/);
+  });
+  it("runs through the tool", async () => {
+    const r = await tool("limiting_reagent").run({ equation: "H2 + O2 -> H2O", reactants: [{ formula: "H2", grams: 4 }, { formula: "O2", grams: 100 }] }, null);
+    expect(r.structured).toMatchObject({ limiting: "H2", product: "H2O" });
   });
 });

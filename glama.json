@@ -271,6 +271,46 @@
           "liters": 2
         }
       }
+    },
+    {
+      "name": "limiting_reagent",
+      "description": "Find the limiting reagent and theoretical yield for a reaction. Pass the unbalanced or balanced equation and the grams of every reactant. It balances the equation first, then reports the limiting reagent, the theoretical yield of a product in grams and moles, and the grams left over of each excess reactant.",
+      "parameters": [
+        {
+          "name": "equation",
+          "type": "string",
+          "required": true,
+          "description": "The reaction, like N2 + H2 -> NH3."
+        },
+        {
+          "name": "reactants",
+          "type": "array",
+          "required": true,
+          "description": "The grams available of every reactant. Each item has a formula, written as in the equation, and grams."
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "required": false,
+          "description": "The product to report the yield for, written as in the equation. Defaults to the first product."
+        }
+      ],
+      "example": {
+        "name": "limiting_reagent",
+        "arguments": {
+          "equation": "N2 + H2 -> NH3",
+          "reactants": [
+            {
+              "formula": "N2",
+              "grams": 28
+            },
+            {
+              "formula": "H2",
+              "grams": 3
+            }
+          ]
+        }
+      }
     }
   ]
 }

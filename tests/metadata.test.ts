@@ -56,7 +56,7 @@ describe("docs match the tools", () => {
     }
   });
   it("says how many tools there are, and the number is right", () => {
-    const words = ["", "one", "two", "three", "four", "five", "six", "seven", "eight"];
+    const words = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
     expect(read("README.md")).toContain(`All ${words[tools.length]} tools are read only`);
     expect(read("llms.txt")).toContain(`All ${words[tools.length]} tools are read only`);
   });

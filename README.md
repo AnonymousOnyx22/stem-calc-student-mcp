@@ -63,7 +63,7 @@ VS Code uses a `servers` key, not `mcpServers`. Add this to `.vscode/mcp.json`:
 
 ## Tools
 
-All eight tools are read only. They calculate an answer and never change anything on your computer.
+All nine tools are read only. They calculate an answer and never change anything on your computer.
 
 | Tool | What it does | Inputs | Example prompt |
 | --- | --- | --- | --- |
@@ -75,6 +75,7 @@ All eight tools are read only. They calculate an answer and never change anythin
 | `empirical_formula` | Finds the simplest whole number formula from mass composition | `composition` and optional `unit` (`percent` or `mass`) | "What is the empirical formula of a compound that is 40 percent carbon, 6.7 percent hydrogen and 53.3 percent oxygen?" |
 | `percent_composition` | Finds the percent by mass of each element in a formula | `formula` | "What is the percent composition of Ca(OH)2?" |
 | `solution_math` | Solves molarity (M = mol/L) or a dilution (M1V1 = M2V2) for the one value you leave out | `mode` (`molarity` or `dilution`), then `moles`, `liters`, `molarity` for molarity, or `initialMolarity`, `initialLiters`, `finalMolarity`, `finalLiters` for a dilution. Volumes are in liters | "What is the molarity of 0.5 mol of NaCl in 2 L of solution?" |
+| `limiting_reagent` | Balances a reaction, then finds the limiting reagent, the theoretical yield of a product and the grams left over of each excess reactant | `equation`, `reactants` (a list of `formula` and `grams`), optional `product` | "How much NH3 can I make from 28 g of N2 and 3 g of H2, and which one runs out?" |
 
 Every tool also returns its answer as fields next to the text, so an app that reads JSON gets the numbers without picking them out of a sentence.
 

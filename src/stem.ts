@@ -304,3 +304,40 @@ export function dilution(v: { initialMolarity?: number; initialLiters?: number; 
   for (const k of keys) r[k] = roundSigFigs(r[k], 6);
   return { ...r, solved };
 }
+
+/** Find the limiting reagent and theoretical yield for a reaction, given grams of each reactant. */
+export function limitingReagent(equation: string, amounts: { formula: string; grams: number }[], product?: string) {
+  const balanced = balanceEquation(equation);
+  const [l, r] = balanced.split(" -> ").map((side) =>
+    side.split(" + ").map((s) => {
+      const m = /^(\d*)(.+)$/.exec(s)!;
+      return { coefficient: m[1] ? Number(m[1]) : 1, formula: m[2] };
+    }),
+  );
+  for (const a of amounts) {
+    if (!l.some((s) => s.formula === a.formula)) throw new Error(`${a.formula} is not a reactant in "${balanced}".`);
+    if (!(a.grams > 0)) throw new Error(`The grams of ${a.formula} must be a positive number.`);
+  }
+  for (const s of l) {
+    if (!amounts.some((a) => a.formula === s.formula)) throw new Error(`Give the grams of ${s.formula}, which is a reactant in "${balanced}".`);
+  }
+  const target = product ? r.find((s) => s.formula === product) : r[0];
+  if (!target) throw new Error(`${product} is not a product in "${balanced}".`);
+  // moles of reaction each reactant could drive; the smallest one runs out first
+  const extent = l.map((s) => ({ ...s, extent: gramsToMoles(amounts.find((a) => a.formula === s.formula)!.grams, s.formula) / s.coefficient }));
+  const limiting = extent.reduce((a, b) => (b.extent < a.extent ? b : a));
+  const leftover = extent
+    .filter((s) => s !== limiting)
+    .map((s) => ({
+      formula: s.formula,
+      leftoverGrams: roundSigFigs(Math.max(0, s.extent - limiting.extent) * s.coefficient * molarMass(s.formula).mass, 6),
+    }));
+  return {
+    balanced,
+    limiting: limiting.formula,
+    product: target.formula,
+    theoreticalYieldMoles: roundSigFigs(limiting.extent * target.coefficient, 6),
+    theoreticalYieldGrams: roundSigFigs(limiting.extent * target.coefficient * molarMass(target.formula).mass, 6),
+    leftover,
+  };
+}

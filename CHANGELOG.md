@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `limiting_reagent`, which balances a reaction and finds the limiting reagent, the theoretical yield and the grams left over of each excess reactant.
 - Added `solution_math`, which solves molarity (M = mol/L) and dilution (M1V1 = M2V2) problems for the value you leave out.
 - Added `percent_composition`, which gives the percent by mass of each element in a formula.
 - Added `empirical_formula`, which finds the simplest whole number formula from mass composition or element percentages.

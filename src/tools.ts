@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition, molarity, dilution } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition, molarity, dilution, limitingReagent } from "./stem.js";
 
 type Api = null;
 
@@ -128,6 +128,25 @@ export const tools: ToolDef<Api>[] = [
       }
       const r = dilution(a);
       return { text: `${r.initialMolarity} M x ${r.initialLiters} L = ${r.finalMolarity} M x ${r.finalLiters} L\nSolved for ${r.solved}.`, structured: { solved: r.solved, result: r[r.solved] } };
+    },
+  },
+  {
+    name: "limiting_reagent",
+    title: "Limiting reagent",
+    description: "Find the limiting reagent and theoretical yield for a reaction. Pass the unbalanced or balanced equation and the grams of every reactant. It balances the equation first, then reports the limiting reagent, the theoretical yield of a product in grams and moles, and the grams left over of each excess reactant.",
+    inputSchema: {
+      equation: z.string().describe("The reaction, like N2 + H2 -> NH3."),
+      reactants: z.array(z.object({ formula: z.string().describe("A reactant formula exactly as written in the equation."), grams: z.number().describe("Grams of that reactant.") })).describe("The grams available of every reactant."),
+      product: z.string().optional().describe("The product to report the yield for, written as in the equation. Defaults to the first product."),
+    },
+    outputSchema: { balanced: z.string(), limiting: z.string(), product: z.string(), theoreticalYieldGrams: z.number(), theoreticalYieldMoles: z.number() },
+    run: async (a) => {
+      const r = limitingReagent(a.equation, a.reactants, a.product);
+      const lines = r.leftover.map((x) => `${x.formula}: ${x.leftoverGrams} g left over`);
+      return {
+        text: `${r.balanced}\nLimiting reagent: ${r.limiting}\nTheoretical yield of ${r.product}: ${r.theoreticalYieldGrams} g (${r.theoreticalYieldMoles} mol)${lines.length ? "\n" + bullets(lines) : ""}`,
+        structured: { balanced: r.balanced, limiting: r.limiting, product: r.product, theoreticalYieldGrams: r.theoreticalYieldGrams, theoreticalYieldMoles: r.theoreticalYieldMoles },
+      };
     },
   },
 ];
