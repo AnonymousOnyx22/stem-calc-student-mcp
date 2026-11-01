@@ -359,3 +359,42 @@ export function idealGasLaw(v: { pressureAtm?: number; liters?: number; moles?: 
   for (const k of keys) r[k] = roundSigFigs(r[k], 6);
   return { ...r, solved };
 }
+
+/** Solve constant acceleration motion (SUVAT) when exactly three of u, v, a, t and s are given. Units are up to the caller. */
+export function kinematics(v: { initialVelocity?: number; finalVelocity?: number; acceleration?: number; time?: number; displacement?: number }) {
+  const keys = ["initialVelocity", "finalVelocity", "acceleration", "time", "displacement"] as const;
+  const known = keys.filter((k) => given(v[k]));
+  if (known.length !== 3) throw new Error("Give exactly three of initialVelocity, finalVelocity, acceleration, time and displacement, and the other two are solved.");
+  for (const k of known) if (!Number.isFinite(v[k])) throw new Error(`${k} must be a number.`);
+  if (given(v.time) && !(v.time! >= 0)) throw new Error("time must not be negative.");
+  let u = v.initialVelocity, f = v.finalVelocity, a = v.acceleration, t = v.time, s = v.displacement;
+  const has = (...k: (typeof keys)[number][]) => k.every((x) => known.includes(x));
+  const root = (sq: number) => {
+    if (sq < 0) throw new Error("No real solution for these values.");
+    return Math.sqrt(sq);
+  };
+  if (has("initialVelocity", "finalVelocity", "acceleration")) { t = (f! - u!) / a!; s = (f! * f! - u! * u!) / (2 * a!); }
+  else if (has("initialVelocity", "finalVelocity", "time")) { a = (f! - u!) / t!; s = ((u! + f!) * t!) / 2; }
+  else if (has("initialVelocity", "finalVelocity", "displacement")) { a = (f! * f! - u! * u!) / (2 * s!); t = (2 * s!) / (u! + f!); }
+  else if (has("initialVelocity", "acceleration", "time")) { f = u! + a! * t!; s = u! * t! + (a! * t! * t!) / 2; }
+  else if (has("initialVelocity", "acceleration", "displacement")) {
+    const r = root(u! * u! + 2 * a! * s!);
+    f = r;
+    t = (f - u!) / a!;
+    if (!(t >= 0)) { f = -r; t = (f - u!) / a!; }
+  } else if (has("initialVelocity", "time", "displacement")) { a = (2 * (s! - u! * t!)) / (t! * t!); f = u! + a * t!; }
+  else if (has("finalVelocity", "acceleration", "time")) { u = f! - a! * t!; s = f! * t! - (a! * t! * t!) / 2; }
+  else if (has("finalVelocity", "acceleration", "displacement")) {
+    const r = root(f! * f! - 2 * a! * s!);
+    u = r;
+    t = (f! - u) / a!;
+    if (!(t >= 0)) { u = -r; t = (f! - u) / a!; }
+  } else if (has("finalVelocity", "time", "displacement")) { a = (2 * (f! * t! - s!)) / (t! * t!); u = f! - a * t!; }
+  else { u = (s! - (a! * t! * t!) / 2) / t!; f = u + a! * t!; }
+  const out = { initialVelocity: u!, finalVelocity: f!, acceleration: a!, time: t!, displacement: s! };
+  for (const k of keys) {
+    if (!Number.isFinite(out[k])) throw new Error("These values do not give a single answer (a division by zero came up).");
+    if (!given(v[k])) out[k] = roundSigFigs(out[k], 6);
+  }
+  return { ...out, solved: keys.filter((k) => !known.includes(k)) };
+}

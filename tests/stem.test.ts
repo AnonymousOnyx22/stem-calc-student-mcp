@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution, limitingReagent, idealGasLaw } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution, limitingReagent, idealGasLaw, kinematics } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -245,5 +245,44 @@ describe("idealGasLaw", () => {
   it("runs through the tool in atm", async () => {
     const r = await tool("ideal_gas_law").run({ pressure: 1, moles: 1, kelvin: 273.15 }, null);
     expect((r.structured as { liters: number }).liters).toBeCloseTo(22.4141, 3);
+  });
+});
+
+describe("kinematics", () => {
+  it("solves v and d from u, a and t", () => {
+    const r = kinematics({ initialVelocity: 5, acceleration: 2, time: 4 });
+    expect(r.finalVelocity).toBe(13);
+    expect(r.displacement).toBe(36);
+    expect(r.solved).toEqual(["finalVelocity", "displacement"]);
+  });
+  it("solves t and d from u, v and a", () => {
+    const r = kinematics({ initialVelocity: 0, finalVelocity: 20, acceleration: 4 });
+    expect(r.time).toBe(5);
+    expect(r.displacement).toBe(50);
+  });
+  it("solves a and t from u, v and d", () => {
+    const r = kinematics({ initialVelocity: 10, finalVelocity: 20, displacement: 75 });
+    expect(r.acceleration).toBe(2);
+    expect(r.time).toBe(5);
+  });
+  it("solves from v, a and t, and from a, t and d", () => {
+    expect(kinematics({ finalVelocity: 30, acceleration: 3, time: 5 }).initialVelocity).toBe(15);
+    expect(kinematics({ acceleration: 2, time: 4, displacement: 36 }).initialVelocity).toBe(5);
+  });
+  it("solves from u, a and d for a falling object", () => {
+    const r = kinematics({ initialVelocity: 0, acceleration: 9.8, displacement: 19.6 });
+    expect(r.finalVelocity).toBeCloseTo(19.6, 4);
+    expect(r.time).toBeCloseTo(2, 4);
+  });
+  it("picks the root with a non negative time", () => {
+    const r = kinematics({ initialVelocity: 10, acceleration: -2, displacement: 21 });
+    expect(r.finalVelocity).toBe(4);
+    expect(r.time).toBe(3);
+  });
+  it("rejects bad input", () => {
+    expect(() => kinematics({ initialVelocity: 1, time: 2 })).toThrow(/exactly three/);
+    expect(() => kinematics({ initialVelocity: 1, acceleration: 2, time: -1 })).toThrow(/negative/);
+    expect(() => kinematics({ initialVelocity: 1, finalVelocity: 5, acceleration: 0 })).toThrow(/division by zero/);
+    expect(() => kinematics({ initialVelocity: 0, acceleration: -2, displacement: 5 })).toThrow(/No real solution/);
   });
 });
