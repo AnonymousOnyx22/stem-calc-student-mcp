@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula } from "./stem.js";
 
 type Api = null;
 
@@ -77,6 +77,21 @@ export const tools: ToolDef<Api>[] = [
     run: async (a) => {
       const r = roundSigFigs(a.value, a.sigFigs);
       return { text: `${a.value} -> ${r}`, structured: { result: r } };
+    },
+  },
+  {
+    name: "empirical_formula",
+    title: "Empirical formula",
+    description: "Find the simplest whole number formula from mass composition. Pass each element's mass or its percent of the total.",
+    inputSchema: {
+      composition: z.record(z.string(), z.number()).describe("Each element's mass or its percent of the total, like {C: 40.0, H: 6.7, O: 53.3}."),
+      unit: z.enum(["percent", "mass"]).optional().describe("Whether the numbers are percentages or masses. Defaults to percent."),
+    },
+    outputSchema: { formula: z.string(), counts: z.record(z.string(), z.number()) },
+    run: async (a) => {
+      const r = empiricalFormula(a.composition, a.unit ?? "percent");
+      const lines = Object.entries(r.counts).map(([el, c]) => `${el}: ${c}`);
+      return { text: `Empirical formula: ${r.formula}\n${bullets(lines)}`, structured: { formula: r.formula, counts: r.counts } };
     },
   },
 ];

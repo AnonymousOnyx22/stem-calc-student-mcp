@@ -4,7 +4,7 @@
 [![downloads](https://img.shields.io/npm/dm/stem-calc-student-mcp.svg)](https://www.npmjs.com/package/stem-calc-student-mcp)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-When an AI guesses chemistry and physics homework, the numbers are often wrong. STEM Calc MCP fixes that: it is a free, open source [MCP](https://modelcontextprotocol.io) server that does the arithmetic with tested code, so you get the same answer every time. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units and rounds to the right number of significant figures.
+When an AI guesses chemistry and physics homework, the numbers are often wrong. STEM Calc MCP fixes that: it is a free, open source [MCP](https://modelcontextprotocol.io) server that does the arithmetic with tested code, so you get the same answer every time. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units, rounds to the right number of significant figures and finds empirical formulas.
 
 Install with one line:
 
@@ -63,7 +63,7 @@ VS Code uses a `servers` key, not `mcpServers`. Add this to `.vscode/mcp.json`:
 
 ## Tools
 
-All five tools are read only. They calculate an answer and never change anything on your computer.
+All six tools are read only. They calculate an answer and never change anything on your computer.
 
 | Tool | What it does | Inputs | Example prompt |
 | --- | --- | --- | --- |
@@ -72,6 +72,7 @@ All five tools are read only. They calculate an answer and never change anything
 | `stoichiometry` | Converts between grams, moles and particles | `value`, `from`, `to` (`grams`, `moles` or `particles`) and `formula`, which grams need | "How many moles are in 36 grams of water?" |
 | `convert_units` | Converts a value from one unit to another | `value`, `from`, `to` | "Convert 2.5 km to feet." |
 | `round_sig_figs` | Rounds a number to a number of significant figures | `value`, `sigFigs` | "Round 123456 to 3 significant figures." |
+| `empirical_formula` | Finds the simplest whole number formula from mass composition | `composition` and optional `unit` (`percent` or `mass`) | "What is the empirical formula of a compound that is 40 percent carbon, 6.7 percent hydrogen and 53.3 percent oxygen?" |
 
 Every tool also returns its answer as fields next to the text, so an app that reads JSON gets the numbers without picking them out of a sentence.
 
@@ -82,7 +83,7 @@ Every tool also returns its answer as fields next to the text, so an app that re
   - `K3[Fe(CN)6]` has 3 potassium, 1 iron, 6 carbon and 6 nitrogen atoms, and a molar mass of 329.247 g/mol.
   - `CuSO4.5H2O` counts the five waters, so it has 1 copper, 1 sulfur, 9 oxygen and 10 hydrogen atoms, and a molar mass of 249.677 g/mol.
 - **Units.** Length: `m`, `km`, `cm`, `mm`, `in`, `ft`. Mass: `g`, `kg`, `mg`, `lb`. Time: `s`, `min`, `h`. Volume: `L`, `mL`, `m^3`. Energy: `J`, `kJ`, `cal`, `kcal`. Temperature: `K`, `C`, `F`. Pressure: `Pa`, `kPa`, `atm`, `mmHg`, `bar`, `psi`. Speed: `m/s`, `km/h`. It refuses to convert one kind into another, so metres to seconds is an error.
-- **What it does not do.** It does not find a limiting reagent, work with charges or isotopes, or balance reactions that have no solution. When it cannot answer, it says so.
+- **What it does not do.** It does not find a limiting reagent, work with charges or isotopes, balance reactions that have no solution, or calculate a molecular formula from an empirical one. When it cannot answer, it says so.
 
 ## How it compares
 

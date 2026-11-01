@@ -1,7 +1,7 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
   "name": "stem-calc-student-mcp",
-  "description": "STEM calculator MCP for chemistry and physics homework: molar mass, balancing equations, grams to moles, unit conversion and significant figures. Works offline, no account or API key.",
+  "description": "STEM calculator MCP for chemistry and physics homework: molar mass, balancing equations, grams to moles, unit conversion, significant figures and empirical formulas. Works offline, no account or API key.",
   "type": "stdio",
   "license": "MIT",
   "repository": {
@@ -153,6 +153,38 @@
         "arguments": {
           "value": 123456,
           "sigFigs": 3
+        }
+      }
+    },
+    {
+      "name": "empirical_formula",
+      "description": "Find the simplest whole number formula from mass composition. Pass each element's mass or its percent of the total.",
+      "parameters": [
+        {
+          "name": "composition",
+          "type": "object",
+          "required": true,
+          "description": "Each element's mass or its percent of the total, like {C: 40.0, H: 6.7, O: 53.3}."
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "required": false,
+          "description": "Whether the numbers are percentages or masses. Defaults to percent.",
+          "enum": [
+            "percent",
+            "mass"
+          ]
+        }
+      ],
+      "example": {
+        "name": "empirical_formula",
+        "arguments": {
+          "composition": {
+            "C": 40.0,
+            "H": 6.7,
+            "O": 53.3
+          }
         }
       }
     }

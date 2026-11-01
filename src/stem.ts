@@ -136,6 +136,60 @@ export function roundSigFigs(value: number, sig: number): number {
 export function gramsToMoles(grams: number, formula: string): number {
   return grams / molarMass(formula).mass;
 }
+
+// Empirical formula from mass composition
+export function empiricalFormula(
+  composition: Record<string, number>,
+  unit: "percent" | "mass" = "percent"
+): { formula: string; counts: Record<string, number> } {
+  const entries = Object.entries(composition);
+  if (entries.length === 0) throw new Error("Pass at least one element with its mass.");
+  const masses: Record<string, number> = {};
+  for (const [el, v] of entries) {
+    if (!(el in ATOMS)) throw new Error(`Unknown element ${el}`);
+    if (!(v > 0)) throw new Error(`Mass for ${el} must be positive, got ${v}.`);
+    masses[el] = v;
+  }
+  // Convert masses to moles
+  const moles: Record<string, number> = {};
+  for (const [el, m] of Object.entries(masses)) {
+    moles[el] = m / ATOMS[el];
+  }
+  // Divide by the smallest to get ratios
+  const minMole = Math.min(...Object.values(moles));
+  const ratios: Record<string, number> = {};
+  for (const [el, m] of Object.entries(moles)) {
+    ratios[el] = m / minMole;
+  }
+  // Find a small integer multiplier that makes every ratio a whole number
+  const tolerance = 0.02;
+  let multiplier = 1;
+  for (let i = 1; i <= 12; i++) {
+    const allWhole = Object.values(ratios).every((r) => {
+      const v = r * i;
+      return Math.abs(v - Math.round(v)) < tolerance;
+    });
+    if (allWhole) {
+      multiplier = i;
+      break;
+    }
+  }
+  const counts: Record<string, number> = {};
+  for (const [el, r] of Object.entries(ratios)) {
+    counts[el] = Math.max(1, Math.round(r * multiplier));
+  }
+  // Hill order: C first, H second, then the rest alphabetical
+  const hillRank = (el: string): [number, string] => (el === "C" ? [0, el] : el === "H" ? [1, el] : [2, el]);
+  const sorted = Object.entries(counts).sort((a, b) => {
+    const [ra, ea] = hillRank(a[0]);
+    const [rb, eb] = hillRank(b[0]);
+    if (ra !== rb) return ra - rb;
+    return ea.localeCompare(eb);
+  });
+  let formula = "";
+  for (const [el, c] of sorted) formula += el + (c > 1 ? c : "");
+  return { formula, counts };
+}
 export function molesToGrams(moles: number, formula: string): number {
   return moles * molarMass(formula).mass;
 }

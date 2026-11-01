@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -135,5 +135,32 @@ describe("stoichiometry", () => {
   });
   it("does not promise a limiting reagent, which it does not calculate", () => {
     expect(tool("stoichiometry").description).not.toMatch(/limiting/i);
+  });
+});
+
+describe("empirical_formula", () => {
+  it("finds the simplest formula from percent composition", () => {
+    expect(empiricalFormula({ C: 40.0, H: 6.7, O: 53.3 }).formula).toBe("CH2O");
+    expect(empiricalFormula({ C: 32.45, H: 2.72, O: 64.83 }).formula).toBe("C2H2O3");
+    expect(empiricalFormula({ C: 58.80, H: 9.87, O: 31.33 }).formula).toBe("C5H10O2");
+    expect(empiricalFormula({ C: 62.04, H: 10.41, O: 27.55 }).formula).toBe("C3H6O");
+  });
+  it("works with masses instead of percentages", () => {
+    expect(empiricalFormula({ C: 2.402, H: 0.403, O: 3.203 }, "mass").formula).toBe("CH2O");
+  });
+  it("returns the counts it used", () => {
+    const r = empiricalFormula({ C: 40.0, H: 6.7, O: 53.3 });
+    expect(r.counts).toEqual({ C: 1, H: 2, O: 1 });
+  });
+  it("uses Hill order in the formula string", () => {
+    expect(empiricalFormula({ C: 83.73, N: 16.27 }).formula).toBe("C6N");
+    expect(empiricalFormula({ H: 11.19, O: 88.81 }).formula).toBe("H2O");
+  });
+  it("refuses unknown elements and non positive masses", () => {
+    expect(() => empiricalFormula({ Xx: 50 })).toThrow(/Unknown element Xx/);
+    expect(() => empiricalFormula({ C: 0, H: 100 })).toThrow(/positive/);
+  });
+  it("does not promise a molecular formula, which it does not calculate", () => {
+    expect(tool("empirical_formula").description).not.toMatch(/molecular formula/i);
   });
 });
