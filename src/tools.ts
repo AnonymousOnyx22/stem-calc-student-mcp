@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition } from "./stem.js";
 
 type Api = null;
 
@@ -92,6 +92,18 @@ export const tools: ToolDef<Api>[] = [
       const r = empiricalFormula(a.composition, a.unit ?? "percent");
       const lines = Object.entries(r.counts).map(([el, c]) => `${el}: ${c}`);
       return { text: `Empirical formula: ${r.formula}\n${bullets(lines)}`, structured: { formula: r.formula, counts: r.counts } };
+    },
+  },
+  {
+    name: "percent_composition",
+    title: "Percent composition",
+    description: "Find the percent by mass of each element in a chemical formula, along with the molar mass. This is the reverse of empirical_formula.",
+    inputSchema: { formula: z.string().describe("Chemical formula like H2O, Ca(OH)2 or CuSO4.5H2O. Write each element with a capital first letter.") },
+    outputSchema: { mass: z.number(), elements: z.array(z.object({ element: z.string(), count: z.number(), mass: z.number(), percent: z.number() })) },
+    run: async (a) => {
+      const r = percentComposition(a.formula);
+      const lines = r.elements.map((e) => `${e.element}: ${e.percent}% (${e.mass} g/mol)`);
+      return { text: `${a.formula}: ${r.mass} g/mol\n${bullets(lines)}`, structured: { mass: r.mass, elements: r.elements } };
     },
   },
 ];

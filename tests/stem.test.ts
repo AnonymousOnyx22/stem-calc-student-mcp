@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -162,5 +162,17 @@ describe("empirical_formula", () => {
   });
   it("does not promise a molecular formula, which it does not calculate", () => {
     expect(tool("empirical_formula").description).not.toMatch(/molecular formula/i);
+  });
+});
+
+describe("percent_composition", () => {
+  it("gives percent by mass for water", () => {
+    const r = percentComposition("H2O");
+    expect(r.elements.find((e) => e.element === "H")!.percent).toBeCloseTo(11.19, 2);
+    expect(r.elements.find((e) => e.element === "O")!.percent).toBeCloseTo(88.81, 2);
+  });
+  it("handles brackets and rejects unknown elements", () => {
+    expect(percentComposition("Ca(OH)2").elements.find((e) => e.element === "O")!.count).toBe(2);
+    expect(() => percentComposition("Xx2")).toThrow();
   });
 });

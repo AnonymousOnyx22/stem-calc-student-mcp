@@ -187,6 +187,24 @@
           }
         }
       }
+    },
+    {
+      "name": "percent_composition",
+      "description": "Find the percent by mass of each element in a chemical formula, along with the molar mass. This is the reverse of empirical_formula.",
+      "parameters": [
+        {
+          "name": "formula",
+          "type": "string",
+          "required": true,
+          "description": "Chemical formula like H2O, Ca(OH)2 or CuSO4.5H2O. Write each element with a capital first letter."
+        }
+      ],
+      "example": {
+        "name": "percent_composition",
+        "arguments": {
+          "formula": "H2O"
+        }
+      }
     }
   ]
 }

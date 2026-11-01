@@ -5,7 +5,7 @@
 ## Setup
 - Run with npx -y stem-calc-student-mcp
 - Works with Claude Desktop, Claude Code, Cursor, VS Code and Windsurf. Needs Node.js 20 or newer.
-- All six tools are read only. They calculate an answer and never change anything.
+- All seven tools are read only. They calculate an answer and never change anything.
 
 ## Tools
 - molar_mass: Parse a chemical formula and return the molar mass in g/mol with the mass each element adds. Handles brackets and hydrates like CuSO4.5H2O. Example prompt: "What is the molar mass of Ca(OH)2?"
@@ -14,6 +14,7 @@
 - convert_units: Convert a value between units of length, mass, time, volume, energy, temperature, pressure, speed or flow rate. Common spellings like ml, degC, °C and L/min are accepted. It refuses to convert one kind of unit into another. Example prompt: "Convert 2.5 km to feet."
 - round_sig_figs: Round a number to a given number of significant figures. Example prompt: "Round 123456 to 3 significant figures."
 - empirical_formula: Find the simplest whole number formula from mass composition. Pass each element's mass or its percent of the total. Example prompt: "What is the empirical formula of a compound that is 40 percent carbon, 6.7 percent hydrogen and 53.3 percent oxygen?"
+- percent_composition: Find the percent by mass of each element in a chemical formula, along with the molar mass. This is the reverse of empirical_formula. Example prompt: "What is the percent composition of Ca(OH)2?"
 
 ## Unit conversion examples
 - Length: convert_units with value 2.5, from "km", to "ft" returns about 8202.1.

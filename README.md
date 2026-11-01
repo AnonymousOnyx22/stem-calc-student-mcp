@@ -4,7 +4,7 @@
 [![downloads](https://img.shields.io/npm/dm/stem-calc-student-mcp.svg)](https://www.npmjs.com/package/stem-calc-student-mcp)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-When an AI guesses chemistry and physics homework, the numbers are often wrong. STEM Calc MCP fixes that: it is a free, open source [MCP](https://modelcontextprotocol.io) server that does the arithmetic with tested code, so you get the same answer every time. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units, rounds to the right number of significant figures and finds empirical formulas.
+When an AI guesses chemistry and physics homework, the numbers are often wrong. STEM Calc MCP fixes that: it is a free, open source [MCP](https://modelcontextprotocol.io) server that does the arithmetic with tested code, so you get the same answer every time. It works out molar mass, balances chemical equations, converts between grams, moles and particles, converts units, rounds to the right number of significant figures finds empirical formulas and gives the percent composition of a formula.
 
 Install with one line:
 
@@ -63,7 +63,7 @@ VS Code uses a `servers` key, not `mcpServers`. Add this to `.vscode/mcp.json`:
 
 ## Tools
 
-All six tools are read only. They calculate an answer and never change anything on your computer.
+All seven tools are read only. They calculate an answer and never change anything on your computer.
 
 | Tool | What it does | Inputs | Example prompt |
 | --- | --- | --- | --- |
@@ -73,6 +73,7 @@ All six tools are read only. They calculate an answer and never change anything 
 | `convert_units` | Converts a value from one unit to another | `value`, `from`, `to` | "Convert 2.5 km to feet." |
 | `round_sig_figs` | Rounds a number to a number of significant figures | `value`, `sigFigs` | "Round 123456 to 3 significant figures." |
 | `empirical_formula` | Finds the simplest whole number formula from mass composition | `composition` and optional `unit` (`percent` or `mass`) | "What is the empirical formula of a compound that is 40 percent carbon, 6.7 percent hydrogen and 53.3 percent oxygen?" |
+| `percent_composition` | Finds the percent by mass of each element in a formula | `formula` | "What is the percent composition of Ca(OH)2?" |
 
 Every tool also returns its answer as fields next to the text, so an app that reads JSON gets the numbers without picking them out of a sentence.
 

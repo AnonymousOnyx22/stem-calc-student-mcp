@@ -137,6 +137,13 @@ export function gramsToMoles(grams: number, formula: string): number {
   return grams / molarMass(formula).mass;
 }
 
+// Percent by mass of each element in a formula
+export function percentComposition(formula: string): { mass: number; elements: { element: string; count: number; mass: number; percent: number }[] } {
+  const { mass, breakdown } = molarMass(formula);
+  const elements = breakdown.map((b) => ({ ...b, percent: Math.round((b.mass / mass) * 1e4) / 1e2 }));
+  return { mass, elements };
+}
+
 // Empirical formula from mass composition
 export function empiricalFormula(
   composition: Record<string, number>,
