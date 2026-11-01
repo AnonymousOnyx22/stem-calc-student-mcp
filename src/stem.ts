@@ -341,3 +341,21 @@ export function limitingReagent(equation: string, amounts: { formula: string; gr
     leftover,
   };
 }
+
+const GAS_CONSTANT = 0.082057366; // L atm / (mol K)
+
+/** Solve PV = nRT for whichever one of pressure (atm), volume (L), moles or temperature (K) is missing. */
+export function idealGasLaw(v: { pressureAtm?: number; liters?: number; moles?: number; kelvin?: number }) {
+  const keys = ["pressureAtm", "liters", "moles", "kelvin"] as const;
+  const missing = keys.filter((k) => !given(v[k]));
+  if (missing.length !== 1) throw new Error("Give exactly three of pressureAtm, liters, moles and kelvin, and the fourth is solved.");
+  for (const k of keys) if (given(v[k]) && !(v[k]! > 0)) throw new Error(`${k} must be a positive number.`);
+  const solved = missing[0];
+  const r = { pressureAtm: v.pressureAtm!, liters: v.liters!, moles: v.moles!, kelvin: v.kelvin! };
+  if (solved === "pressureAtm") r.pressureAtm = (r.moles * GAS_CONSTANT * r.kelvin) / r.liters;
+  if (solved === "liters") r.liters = (r.moles * GAS_CONSTANT * r.kelvin) / r.pressureAtm;
+  if (solved === "moles") r.moles = (r.pressureAtm * r.liters) / (GAS_CONSTANT * r.kelvin);
+  if (solved === "kelvin") r.kelvin = (r.pressureAtm * r.liters) / (r.moles * GAS_CONSTANT);
+  for (const k of keys) r[k] = roundSigFigs(r[k], 6);
+  return { ...r, solved };
+}

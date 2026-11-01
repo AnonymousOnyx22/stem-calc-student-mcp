@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution, limitingReagent } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution, limitingReagent, idealGasLaw } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -219,5 +219,22 @@ describe("limiting_reagent", () => {
   it("runs through the tool", async () => {
     const r = await tool("limiting_reagent").run({ equation: "H2 + O2 -> H2O", reactants: [{ formula: "H2", grams: 4 }, { formula: "O2", grams: 100 }] }, null);
     expect(r.structured).toMatchObject({ limiting: "H2", product: "H2O" });
+  });
+});
+
+describe("idealGasLaw", () => {
+  it("solves for volume at 1 atm and 273.15 K", () => {
+    const r = idealGasLaw({ pressureAtm: 1, moles: 1, kelvin: 273.15 });
+    expect(r.solved).toBe("liters");
+    expect(r.liters).toBeCloseTo(22.4141, 3);
+  });
+  it("solves for pressure, moles and temperature", () => {
+    expect(idealGasLaw({ liters: 10, moles: 2, kelvin: 300 }).pressureAtm).toBeCloseTo(4.92344, 4);
+    expect(idealGasLaw({ pressureAtm: 2, liters: 5, kelvin: 300 }).moles).toBeCloseTo(0.406208, 4);
+    expect(idealGasLaw({ pressureAtm: 1, liters: 22.4141, moles: 1 }).kelvin).toBeCloseTo(273.15, 1);
+  });
+  it("rejects bad input", () => {
+    expect(() => idealGasLaw({ pressureAtm: 1, liters: 1 })).toThrow(/exactly three/);
+    expect(() => idealGasLaw({ pressureAtm: -1, liters: 1, moles: 1 })).toThrow(/positive/);
   });
 });
