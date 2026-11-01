@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `solution_math`, which solves molarity (M = mol/L) and dilution (M1V1 = M2V2) problems for the value you leave out.
 - Added `percent_composition`, which gives the percent by mass of each element in a formula.
 - Added `empirical_formula`, which finds the simplest whole number formula from mass composition or element percentages.
 - convert_units now lists every supported unit by category in its unknown unit error, so mistyped units such as mmHg or km/h show what is supported instead of a dead end.

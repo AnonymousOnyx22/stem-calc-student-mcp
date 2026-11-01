@@ -271,3 +271,36 @@ export function balanceEquation(eq: string): string {
   const fmt = (arr: string[], off: number) => arr.map((f, i) => (ints[off + i] === 1 ? "" : ints[off + i]) + f).join(" + ");
   return `${fmt(left, 0)} -> ${fmt(right, left.length)}`;
 }
+
+const given = (v: number | undefined) => v !== undefined;
+
+/** Solve M = mol / L for whichever one of the three values is missing. */
+export function molarity(v: { moles?: number; liters?: number; molarity?: number }) {
+  const keys = ["moles", "liters", "molarity"] as const;
+  const missing = keys.filter((k) => !given(v[k]));
+  if (missing.length !== 1) throw new Error("Give exactly two of moles, liters and molarity, and the third is solved.");
+  for (const k of keys) if (given(v[k]) && !(v[k]! > 0)) throw new Error(`${k} must be a positive number.`);
+  const solved = missing[0];
+  const r = { moles: v.moles!, liters: v.liters!, molarity: v.molarity! };
+  if (solved === "molarity") r.molarity = r.moles / r.liters;
+  if (solved === "moles") r.moles = r.molarity * r.liters;
+  if (solved === "liters") r.liters = r.moles / r.molarity;
+  for (const k of keys) r[k] = roundSigFigs(r[k], 6);
+  return { ...r, solved };
+}
+
+/** Solve M1V1 = M2V2 for whichever one of the four values is missing. */
+export function dilution(v: { initialMolarity?: number; initialLiters?: number; finalMolarity?: number; finalLiters?: number }) {
+  const keys = ["initialMolarity", "initialLiters", "finalMolarity", "finalLiters"] as const;
+  const missing = keys.filter((k) => !given(v[k]));
+  if (missing.length !== 1) throw new Error("Give exactly three of initialMolarity, initialLiters, finalMolarity and finalLiters, and the fourth is solved.");
+  for (const k of keys) if (given(v[k]) && !(v[k]! > 0)) throw new Error(`${k} must be a positive number.`);
+  const solved = missing[0];
+  const r = { initialMolarity: v.initialMolarity!, initialLiters: v.initialLiters!, finalMolarity: v.finalMolarity!, finalLiters: v.finalLiters! };
+  if (solved === "initialMolarity") r.initialMolarity = (r.finalMolarity * r.finalLiters) / r.initialLiters;
+  if (solved === "initialLiters") r.initialLiters = (r.finalMolarity * r.finalLiters) / r.initialMolarity;
+  if (solved === "finalMolarity") r.finalMolarity = (r.initialMolarity * r.initialLiters) / r.finalLiters;
+  if (solved === "finalLiters") r.finalLiters = (r.initialMolarity * r.initialLiters) / r.finalMolarity;
+  for (const k of keys) r[k] = roundSigFigs(r[k], 6);
+  return { ...r, solved };
+}

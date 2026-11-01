@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition, molarity, dilution } from "./stem.js";
 
 type Api = null;
 
@@ -104,6 +104,30 @@ export const tools: ToolDef<Api>[] = [
       const r = percentComposition(a.formula);
       const lines = r.elements.map((e) => `${e.element}: ${e.percent}% (${e.mass} g/mol)`);
       return { text: `${a.formula}: ${r.mass} g/mol\n${bullets(lines)}`, structured: { mass: r.mass, elements: r.elements } };
+    },
+  },
+  {
+    name: "solution_math",
+    title: "Solution math",
+    description: "Solve molarity (M = mol/L) or a dilution (M1V1 = M2V2). Leave out the one value you want and it is solved. Volumes are in liters.",
+    inputSchema: {
+      mode: z.enum(["molarity", "dilution"]).describe("molarity solves M = mol/L. dilution solves M1V1 = M2V2."),
+      moles: z.number().optional().describe("Moles of solute. Molarity mode only."),
+      liters: z.number().optional().describe("Volume of the solution in liters. Molarity mode only."),
+      molarity: z.number().optional().describe("Concentration in mol/L. Molarity mode only."),
+      initialMolarity: z.number().optional().describe("Starting concentration M1 in mol/L. Dilution mode only."),
+      initialLiters: z.number().optional().describe("Starting volume V1 in liters. Dilution mode only."),
+      finalMolarity: z.number().optional().describe("Final concentration M2 in mol/L. Dilution mode only."),
+      finalLiters: z.number().optional().describe("Final volume V2 in liters. Dilution mode only."),
+    },
+    outputSchema: { solved: z.string(), result: z.number() },
+    run: async (a) => {
+      if (a.mode === "molarity") {
+        const r = molarity(a);
+        return { text: `${r.moles} mol in ${r.liters} L = ${r.molarity} M\nSolved for ${r.solved}.`, structured: { solved: r.solved, result: r[r.solved] } };
+      }
+      const r = dilution(a);
+      return { text: `${r.initialMolarity} M x ${r.initialLiters} L = ${r.finalMolarity} M x ${r.finalLiters} L\nSolved for ${r.solved}.`, structured: { solved: r.solved, result: r[r.solved] } };
     },
   },
 ];

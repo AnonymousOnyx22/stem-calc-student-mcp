@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition } from "../src/stem.js";
+import { molarMass, parseFormula, balanceEquation, convertUnits, roundSigFigs, gramsToMoles, empiricalFormula, percentComposition, molarity, dilution } from "../src/stem.js";
 import { tools } from "../src/tools.js";
 
 const tool = (name: string) => tools.find((t) => t.name === name)!;
@@ -174,5 +174,26 @@ describe("percent_composition", () => {
   it("handles brackets and rejects unknown elements", () => {
     expect(percentComposition("Ca(OH)2").elements.find((e) => e.element === "O")!.count).toBe(2);
     expect(() => percentComposition("Xx2")).toThrow();
+  });
+});
+
+describe("solution_math", () => {
+  it("solves molarity for each missing value", () => {
+    expect(molarity({ moles: 0.5, liters: 2 }).molarity).toBe(0.25);
+    expect(molarity({ molarity: 2, liters: 0.25 }).moles).toBe(0.5);
+    expect(molarity({ moles: 1, molarity: 4 }).liters).toBe(0.25);
+  });
+  it("solves a dilution for each missing value", () => {
+    expect(dilution({ initialMolarity: 12, initialLiters: 0.025, finalLiters: 1 }).finalMolarity).toBe(0.3);
+    expect(dilution({ initialMolarity: 12, finalMolarity: 0.3, finalLiters: 1 }).initialLiters).toBe(0.025);
+  });
+  it("needs the right number of values and positive numbers", () => {
+    expect(() => molarity({ moles: 1 })).toThrow(/exactly two/);
+    expect(() => dilution({ initialMolarity: 1, initialLiters: 1 })).toThrow(/exactly three/);
+    expect(() => molarity({ moles: -1, liters: 1 })).toThrow(/positive/);
+  });
+  it("runs through the tool", async () => {
+    const r = await tool("solution_math").run({ mode: "molarity", moles: 1, liters: 2 }, null);
+    expect(r.structured).toEqual({ solved: "molarity", result: 0.5 });
   });
 });

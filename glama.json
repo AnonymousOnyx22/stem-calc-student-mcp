@@ -205,6 +205,72 @@
           "formula": "H2O"
         }
       }
+    },
+    {
+      "name": "solution_math",
+      "description": "Solve molarity (M = mol/L) or a dilution (M1V1 = M2V2). Leave out the one value you want and it is solved. Volumes are in liters.",
+      "parameters": [
+        {
+          "name": "mode",
+          "type": "string",
+          "required": true,
+          "description": "molarity solves M = mol/L. dilution solves M1V1 = M2V2.",
+          "enum": [
+            "molarity",
+            "dilution"
+          ]
+        },
+        {
+          "name": "moles",
+          "type": "number",
+          "required": false,
+          "description": "Moles of solute. Molarity mode only."
+        },
+        {
+          "name": "liters",
+          "type": "number",
+          "required": false,
+          "description": "Volume of the solution in liters. Molarity mode only."
+        },
+        {
+          "name": "molarity",
+          "type": "number",
+          "required": false,
+          "description": "Concentration in mol/L. Molarity mode only."
+        },
+        {
+          "name": "initialMolarity",
+          "type": "number",
+          "required": false,
+          "description": "Starting concentration M1 in mol/L. Dilution mode only."
+        },
+        {
+          "name": "initialLiters",
+          "type": "number",
+          "required": false,
+          "description": "Starting volume V1 in liters. Dilution mode only."
+        },
+        {
+          "name": "finalMolarity",
+          "type": "number",
+          "required": false,
+          "description": "Final concentration M2 in mol/L. Dilution mode only."
+        },
+        {
+          "name": "finalLiters",
+          "type": "number",
+          "required": false,
+          "description": "Final volume V2 in liters. Dilution mode only."
+        }
+      ],
+      "example": {
+        "name": "solution_math",
+        "arguments": {
+          "mode": "molarity",
+          "moles": 0.5,
+          "liters": 2
+        }
+      }
     }
   ]
 }
