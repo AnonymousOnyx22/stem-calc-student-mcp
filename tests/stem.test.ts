@@ -91,6 +91,19 @@ describe("convert_units", () => {
   it("names a unit it does not know", () => {
     expect(() => convertUnits(1, "parsec", "m")).toThrow(/Unknown unit/);
   });
+  it("lists every supported unit by category in the unknown unit error", () => {
+    let msg = "";
+    try {
+      convertUnits(1, "parsec", "m");
+    } catch (e) {
+      msg = String(e);
+    }
+    expect(msg).toContain("Unknown unit");
+    expect(msg).toContain("- length: m, km, cm, mm, in, ft");
+    expect(msg).toContain("- pressure: Pa, kPa, atm, mmHg, bar, psi");
+    expect(msg).toContain("- speed: m/s, km/h");
+    expect(msg).toContain("- flow: m^3/s, L/s, L/min, mL/min");
+  });
 });
 
 describe("round_sig_figs", () => {

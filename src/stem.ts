@@ -85,6 +85,9 @@ const KINDS: Record<string, string[]> = {
   flow: ["m^3/s", "L/s", "L/min", "mL/min"],
 };
 const kindOf = (unit: string) => Object.keys(KINDS).find((k) => KINDS[k].includes(unit));
+function listSupportedUnits(): string {
+  return Object.entries(KINDS).map(([kind, units]) => `- ${kind}: ${units.join(", ")}`).join("\n");
+}
 /** Common spellings people type, mapped to the unit names above. Keys are lower case. */
 const ALIASES: Record<string, string> = {
   "°c": "C", degc: "C", celsius: "C", "°f": "F", degf: "F", fahrenheit: "F", kelvin: "K",
@@ -117,7 +120,7 @@ export function convertUnits(value: number, fromUnit: string, toUnit: string): n
   if (from === "F" && to === "K") return (value-32)*5/9+273.15;
   if (from === "K" && to === "F") return (value-273.15)*9/5+32;
   const f = FACTORS[from], t = FACTORS[to];
-  if (f === undefined || t === undefined) throw new Error(`Unknown unit ${f === undefined ? fromUnit : toUnit}. Try a unit like km, kg, mL, L/min, J, C, atm or km/h.`);
+  if (f === undefined || t === undefined) throw new Error(`Unknown unit ${f === undefined ? fromUnit : toUnit}.\nSupported units:\n${listSupportedUnits()}\nCommon spellings also work, such as ml, litre, degC, °F, kelvin, torr, kmh and lpm.`);
   return value * f / t;
 }
 
