@@ -311,6 +311,55 @@
           ]
         }
       }
+    },
+    {
+      "name": "ideal_gas_law",
+      "description": "Solve the ideal gas law PV = nRT for the one value you leave out. Pressure is in atm or kPa, volume in liters, temperature in kelvin and amount in moles. The answer comes back in the same pressure unit you used.",
+      "parameters": [
+        {
+          "name": "pressure",
+          "type": "number",
+          "required": false,
+          "description": "Pressure of the gas, in the unit given by pressureUnit."
+        },
+        {
+          "name": "pressureUnit",
+          "type": "string",
+          "required": false,
+          "description": "Unit for pressure, atm or kPa. Defaults to atm.",
+          "enum": [
+            "atm",
+            "kPa"
+          ]
+        },
+        {
+          "name": "liters",
+          "type": "number",
+          "required": false,
+          "description": "Volume of the gas in liters (L)."
+        },
+        {
+          "name": "moles",
+          "type": "number",
+          "required": false,
+          "description": "Amount of gas in moles."
+        },
+        {
+          "name": "kelvin",
+          "type": "number",
+          "required": false,
+          "description": "Temperature in kelvin (K). Convert from Celsius first by adding 273.15."
+        }
+      ],
+      "example": {
+        "name": "ideal_gas_law",
+        "arguments": {
+          "liters": 10,
+          "moles": 2,
+          "kelvin": 300,
+          "pressureUnit": "kPa"
+        }
+      }
     }
   ]
 }

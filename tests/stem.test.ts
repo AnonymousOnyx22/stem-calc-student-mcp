@@ -237,4 +237,13 @@ describe("idealGasLaw", () => {
     expect(() => idealGasLaw({ pressureAtm: 1, liters: 1 })).toThrow(/exactly three/);
     expect(() => idealGasLaw({ pressureAtm: -1, liters: 1, moles: 1 })).toThrow(/positive/);
   });
+  it("runs through the tool in kPa", async () => {
+    const r = await tool("ideal_gas_law").run({ liters: 10, moles: 2, kelvin: 300, pressureUnit: "kPa" }, null);
+    expect(r.structured).toMatchObject({ solved: "pressure", pressureUnit: "kPa" });
+    expect((r.structured as { pressure: number }).pressure).toBeCloseTo(498.87, 1);
+  });
+  it("runs through the tool in atm", async () => {
+    const r = await tool("ideal_gas_law").run({ pressure: 1, moles: 1, kelvin: 273.15 }, null);
+    expect((r.structured as { liters: number }).liters).toBeCloseTo(22.4141, 3);
+  });
 });

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { type ToolDef, bullets } from "./core/tools.js";
-import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition, molarity, dilution, limitingReagent } from "./stem.js";
+import { ATOMS, molarMass, balanceEquation, gramsToMoles, molesToGrams, molesToParticles, convertUnits, roundSigFigs, empiricalFormula, percentComposition, molarity, dilution, limitingReagent, idealGasLaw } from "./stem.js";
 
 type Api = null;
 
@@ -146,6 +146,30 @@ export const tools: ToolDef<Api>[] = [
       return {
         text: `${r.balanced}\nLimiting reagent: ${r.limiting}\nTheoretical yield of ${r.product}: ${r.theoreticalYieldGrams} g (${r.theoreticalYieldMoles} mol)${lines.length ? "\n" + bullets(lines) : ""}`,
         structured: { balanced: r.balanced, limiting: r.limiting, product: r.product, theoreticalYieldGrams: r.theoreticalYieldGrams, theoreticalYieldMoles: r.theoreticalYieldMoles },
+      };
+    },
+  },
+  {
+    name: "ideal_gas_law",
+    title: "Ideal gas law",
+    description: "Solve the ideal gas law PV = nRT for the one value you leave out. Pressure is in atm or kPa, volume in liters, temperature in kelvin and amount in moles. The answer comes back in the same pressure unit you used.",
+    inputSchema: {
+      pressure: z.number().optional().describe("Pressure of the gas, in the unit given by pressureUnit."),
+      pressureUnit: z.enum(["atm", "kPa"]).optional().describe("Unit for pressure, atm or kPa. Defaults to atm."),
+      liters: z.number().optional().describe("Volume of the gas in liters (L)."),
+      moles: z.number().optional().describe("Amount of gas in moles."),
+      kelvin: z.number().optional().describe("Temperature in kelvin (K). Convert from Celsius first by adding 273.15."),
+    },
+    outputSchema: { solved: z.string(), pressure: z.number(), pressureUnit: z.string(), liters: z.number(), moles: z.number(), kelvin: z.number() },
+    run: async (a) => {
+      const unit = a.pressureUnit ?? "atm";
+      const perAtm = unit === "kPa" ? 101.325 : 1;
+      const r = idealGasLaw({ pressureAtm: a.pressure === undefined ? undefined : a.pressure / perAtm, liters: a.liters, moles: a.moles, kelvin: a.kelvin });
+      const pressure = r.solved === "pressureAtm" ? roundSigFigs(r.pressureAtm * perAtm, 6) : a.pressure!;
+      const solved = r.solved === "pressureAtm" ? "pressure" : r.solved;
+      return {
+        text: `${pressure} ${unit} x ${r.liters} L = ${r.moles} mol x R x ${r.kelvin} K\nSolved for ${solved}.`,
+        structured: { solved, pressure, pressureUnit: unit, liters: r.liters, moles: r.moles, kelvin: r.kelvin },
       };
     },
   },

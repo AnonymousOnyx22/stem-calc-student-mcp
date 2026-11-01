@@ -5,7 +5,7 @@
 ## Setup
 - Run with npx -y stem-calc-student-mcp
 - Works with Claude Desktop, Claude Code, Cursor, VS Code and Windsurf. Needs Node.js 20 or newer.
-- All nine tools are read only. They calculate an answer and never change anything.
+- All ten tools are read only. They calculate an answer and never change anything.
 
 ## Tools
 - molar_mass: Parse a chemical formula and return the molar mass in g/mol with the mass each element adds. Handles brackets and hydrates like CuSO4.5H2O. Example prompt: "What is the molar mass of Ca(OH)2?"
@@ -17,6 +17,7 @@
 - percent_composition: Find the percent by mass of each element in a chemical formula, along with the molar mass. This is the reverse of empirical_formula. Example prompt: "What is the percent composition of Ca(OH)2?"
 - solution_math: Solve molarity (M = mol/L) or a dilution (M1V1 = M2V2). Leave out the one value you want and it is solved. Volumes are in liters. Example prompt: "How much 12 M HCl do I need to make 1 L of 0.3 M HCl?"
 - limiting_reagent: Find the limiting reagent and theoretical yield for a reaction. Pass the unbalanced or balanced equation and the grams of every reactant. It balances the equation first, then reports the limiting reagent, the theoretical yield of a product in grams and moles, and the grams left over of each excess reactant. Example prompt: "How much NH3 can I make from 28 g of N2 and 3 g of H2, and which one runs out?"
+- ideal_gas_law: Solve the ideal gas law PV = nRT for the one value you leave out. Pressure is in atm or kPa, volume in liters, temperature in kelvin and amount in moles. The answer comes back in the same pressure unit you used. Example prompt: "At 300 K, what pressure in kPa does 2 mol of gas have in a 10 L tank?"
 
 ## Unit conversion examples
 - Length: convert_units with value 2.5, from "km", to "ft" returns about 8202.1.

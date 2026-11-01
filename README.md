@@ -63,7 +63,7 @@ VS Code uses a `servers` key, not `mcpServers`. Add this to `.vscode/mcp.json`:
 
 ## Tools
 
-All nine tools are read only. They calculate an answer and never change anything on your computer.
+All ten tools are read only. They calculate an answer and never change anything on your computer.
 
 | Tool | What it does | Inputs | Example prompt |
 | --- | --- | --- | --- |
@@ -76,6 +76,7 @@ All nine tools are read only. They calculate an answer and never change anything
 | `percent_composition` | Finds the percent by mass of each element in a formula | `formula` | "What is the percent composition of Ca(OH)2?" |
 | `solution_math` | Solves molarity (M = mol/L) or a dilution (M1V1 = M2V2) for the one value you leave out | `mode` (`molarity` or `dilution`), then `moles`, `liters`, `molarity` for molarity, or `initialMolarity`, `initialLiters`, `finalMolarity`, `finalLiters` for a dilution. Volumes are in liters | "What is the molarity of 0.5 mol of NaCl in 2 L of solution?" |
 | `limiting_reagent` | Balances a reaction, then finds the limiting reagent, the theoretical yield of a product and the grams left over of each excess reactant | `equation`, `reactants` (a list of `formula` and `grams`), optional `product` | "How much NH3 can I make from 28 g of N2 and 3 g of H2, and which one runs out?" |
+| `ideal_gas_law` | Solves PV = nRT for the one value you leave out. Pressure is in atm or kPa, volume in L, temperature in K | `pressure`, `pressureUnit` (`atm` or `kPa`), `liters`, `moles`, `kelvin`. Give three, leave out one | "At 300 K, what pressure in kPa does 2 mol of gas have in a 10 L tank?" |
 
 Every tool also returns its answer as fields next to the text, so an app that reads JSON gets the numbers without picking them out of a sentence.
 

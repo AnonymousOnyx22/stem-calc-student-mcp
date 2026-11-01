@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `ideal_gas_law`, which solves PV = nRT for the one value you leave out, with pressure in atm or kPa, volume in L and temperature in K.
 - Added `limiting_reagent`, which balances a reaction and finds the limiting reagent, the theoretical yield and the grams left over of each excess reactant.
 - Added `solution_math`, which solves molarity (M = mol/L) and dilution (M1V1 = M2V2) problems for the value you leave out.
 - Added `percent_composition`, which gives the percent by mass of each element in a formula.
