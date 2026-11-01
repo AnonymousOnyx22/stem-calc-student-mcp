@@ -26,7 +26,7 @@
 ## Limits
 - It knows 56 common elements. An unknown element symbol is an error.
 - It does not find limiting reagents, does not handle charges or isotopes, and does not calculate a molecular formula from an empirical one.
-- Units are written as m, km, cm, mm, in, ft, g, kg, mg, lb, s, min, h, L, mL, m^3, J, kJ, cal, kcal, K, C and F.
+- Units are written as m, km, cm, mm, in, ft, g, kg, mg, lb, s, min, h, L, mL, m^3, J, kJ, cal, kcal, K, C, F, Pa, kPa, atm, mmHg, bar, psi, m/s, km/h, m^3/s, L/s, L/min and mL/min.
 
 ## Answers to common questions
 - "What is the molar mass of copper sulfate pentahydrate?" Use molar_mass with CuSO4.5H2O.
